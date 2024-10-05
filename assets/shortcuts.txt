@@ -1,0 +1,54 @@
+Selection and Navigation:
+
+Select Word: Ctrl + D (Selects the word where the cursor is placed).
+
+Select All Occurrences: Ctrl + Shift + L (Selects all occurrences of the current word to edit them simultaneously).
+
+Select Line: Ctrl + L (Selects the entire current line).
+
+Duplicate Line: Ctrl + Shift + D (Duplicates the current line and pastes it directly below).
+
+
+Go to Line: Ctrl + G (Opens a prompt to jump to a specific line number in the file).
+
+Go to Beginning/End of Line: Home / End (Moves the cursor to the beginning or end of the line).
+
+
+Undo Last Cursor: Ctrl + U (Undoes the last cursor operation or multi-cursor placement).
+
+
+Insert Line Below: Ctrl + Enter (Inserts a new line directly below the current line without moving the cursor).
+
+Insert Line Above: Ctrl + Shift + Enter (Inserts a new line directly above the current line without moving the cursor).
+
+
+Find and Replace:
+
+Replace: Ctrl + H (Opens the replace functionality to search and replace text in the file).
+
+Find Next/Previous: F3 / Shift + F3 (Moves the cursor to the next or previous occurrence of the search term).
+
+
+Editing and Formatting:
+
+Format Document: Shift + Alt + F (Formats the entire document according to the code style rules).
+
+
+Clipboard Management:
+
+Clipboard History: Ctrl + Shift + V (Opens the clipboard history to paste from previous copied items).
+
+
+Git and Version Control:
+
+Open Git View: Ctrl + Shift + G (Opens the Git source control panel for managing version control).
+
+Stage Changes: Ctrl + Shift + G, then press A (Stages all changes in the current repository for commit).
+
+Commit Changes: Ctrl + Enter (in Git panel) (Commits all staged changes with a commit message).
+
+View File History: Ctrl + Shift + G, then press H (Opens the file history to view past commits affecting the current file).
+
+Navigate Between Changes: Alt + F5 (Moves the cursor to the next change in the current file).
+
+Revert Last Commit: Ctrl + Shift + P, then type Git: Revert Last Commit (Reverts the most recent commit in the Git repository).

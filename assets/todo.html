@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<!-- 
+NOTES: 
+  multiple components
+  no refs
+  uses Redux instead of internal state
+-->
+<html> 
+  <head>
+    <meta charset="utf-8">
+    <!-- CDN Resources (1.1MB) -->
+    <!-- NOTE: The ORDER is important! -->
+    <!-- CDN Minified Resources (394KB) -->
+    <script src="https://fb.me/react-with-addons-15.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.0.4/redux.min.js"></script>
+    <!--   ::Added react-redux-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.min.js"></script>
+    <script src="https://fb.me/react-dom-0.14.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+
+    <title>React Template with CDN Resources - JSX, Redux</title>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="text/babel">
+      console.log('start');
+      // This is:
+      //     const Component = React.Component;
+      // The same as below (destructured):
+      const { Component } = React;
+      const { Provider, connect } = ReactRedux;
+
+      //--------------------
+      // HELPER
+      //--------------------
+
+      // count closure - used to provide unique ids for component keys of todo items.
+      const getIdCount = (() => {
+        let count = 0;
+        return () => {
+          return count++;
+        }
+      })();
+
+      //--------------------
+      // REDUX
+      //--------------------
+
+      // REDUX ACTIONS
+      const ADD_TODO = 'ADD_TODO';
+
+      // REDUX ACTION CREATORS
+      const addTodoAction = (desc) => {
+        console.log('-->addTodoAction desc:', desc);
+        return {
+          type: ADD_TODO,
+          payload: {
+            id: getIdCount(),
+            desc,
+          }
+        };
+      };
+
+      // REDUX - INITIAL STATE FOR REDUCER
+      const initialState = [
+        {
+          desc: 'milk',
+          id: getIdCount()
+        },
+        {
+          desc: 'cookies',
+          id: getIdCount()
+        }
+      ];
+
+      // REDUX REDUCER - takes the old state and an action, and returns the new state
+      //     NOTE: the state object is never modified. If a change is needed, a new state is created and returned.
+
+      //     initial empty state
+      //     const todos = (state = [], action) => {
+      const todos = (state = initialState, action) => {
+        switch (action.type) {
+          case 'ADD_TODO':
+            // return current state plus the next todo item.
+            // uses the ES6 'rest' operator on state. eg: ...state
+            return [
+              ...state,
+              {
+                id: action.payload.id,
+                desc: action.payload.desc,
+                completed: false,
+              },
+            ];
+          default:
+            return state;
+        }
+      };
+      const todoApp = Redux.combineReducers({
+        todos
+      });
+
+      // Redux Store
+
+      //     NOTE: Causes an error if you try to init with devToolsExtension.
+      //     const store = Redux.createStore(todoApp, window.devToolsExtension && window.devToolsExtension());
+      const store = Redux.createStore(todoApp);
+
+      //--------------------
+      // Components
+      //--------------------
+      class App extends Component {
+        render() {
+          return (
+            <Todo />
+          );
+        }
+      }
+
+      class Todo extends Component {
+        render() {
+          return (
+            <div>
+              <TodoItemConnected />
+              <TodoListConnected />
+            </div>
+          );
+        }
+      };
+
+      class TodoItem extends Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            description: ''
+          }
+          this.addItem = this.addItem.bind(this);
+        }
+
+        addItem(description) {
+            store.dispatch(addTodoAction(description));
+            this.setState({
+              description: ''
+            });
+
+        }
+        onChange(event) {
+          this.setState({
+            description: event.target.value
+          });
+        }
+        render() {
+          let input;
+          return (
+            <div>
+              <input onChange={(event)=>{this.onChange(event)}} value={this.state.description}/>
+              <button onClick={()=>this.addItem(this.state.description)}>Add</button>
+            </div>
+          );
+        }
+      }
+      // connect the component to the Redux store
+      const TodoItemConnected = connect()(TodoItem);
+
+      class TodoList extends Component {
+        render() {
+          const { todos } = this.props;
+          return (
+            <ul>
+              {todos.map(todo => (
+                <li key={todo.id}>
+                  {todo.desc}
+                </li>
+              ))}
+            </ul>
+          );
+        }
+      }
+
+      const TodoListConnected = connect(
+        state => ({
+          todos: state.todos
+        })
+      )(TodoList);
+
+      //--------------------
+      // Main - wrap the redux store around the main App and render.
+      //--------------------
+
+      // Wrap App with a store provider (a higher-order component, providing ).
+
+      // Previously:
+      // ReactDOM.render(<App />, document.getElementById('app'));
+      ReactDOM.render(
+        <Provider store={store}>
+          <App />
+        </Provider>,
+        document.getElementById('app')
+      );
+
+      console.log('done');
+    </script>
+  </body>
+</html>

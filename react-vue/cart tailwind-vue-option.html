@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="../assets/tailwindcss.js"></script>
+    <script src="../assets/vue.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'green': '#008800',
+                        'blue': '#0000ff',
+                        'red': '#ff0000',
+                        'white': '#ffffff',
+                        'grey': {
+                            DEFAULT: '#2F4F4F',
+                            50: '#81B4B4',
+                            100: '#75ADAD',
+                            200: '#5D9C9C',
+                            300: '#4D8282',
+                            400: '#3E6969',
+                            500: '#2F4F4F',
+                            600: '#1A2C2C',
+                            700: '#050909',
+                            800: '#000000',
+                            900: '#000000',
+                            950: '#000000'
+                        },
+                        'lightgrey': {
+                            DEFAULT: '#81B4B4',
+                            50: '#F4F9F9',
+                            100: '#E7F1F1',
+                            200: '#CEE2E2',
+                            300: '#B4D2D2',
+                            400: '#9BC3C3',
+                            500: '#81B4B4',
+                            600: '#5E9F9F',
+                            700: '#497B7B',
+                            800: '#355858',
+                            900: '#203535',
+                            950: '#152323'
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body id="app" class="bg-lightgrey-200 flex flex-1 flex-col font-black text-grey-900 h-screen">
+    <div class='slideDown bg-grey-100 text-grey-900 h-20 max-h-20 min-h-20 flex items-center pl-5'>
+       <h1 >{{message}}</h1>
+    </div>
+    <button @click="changeMsg">change message</button> 
+    <div id="container" class="flex flex-1">
+        <div id="sidebar" class="bg-lightgrey-400 text-grey-900 w-60 p-5 box-border ">
+            <h1>Testing</h1>
+        </div>
+        <div id='mainBox' class="flex w-full gap-2.5 m-4">
+            <div class="grid-item slideDown p-5 bg-lightgrey-300" style='width: 35%;'>
+                <form id="ecommerceForm" onsubmit="event.preventDefault();" class="flex flex-col gap-1">
+                    <label class="text-xl">Checkout Form</label>
+                    <input class="h-7 rounded bg-lightgrey-100 pl-2" type='text' name='first_name' required
+                        v-model="checkoutForm.first_name" id='first_name' placeholder="Enter you first_name" />
+                    <span class="text-red" hidden id='taskErrorField-first_name'>This field is required</span>
+                    <input class="h-7 rounded bg-lightgrey-100 pl-2" type='text' name='last_name' required
+                        v-model="checkoutForm.last_name" id='last_name' placeholder="Enter you last_name" />
+                    <span class="text-red" hidden id='taskErrorField-last_name'>This field is required</span>
+                    <input class="h-7 rounded bg-lightgrey-100 pl-2" type='tel' name='number' required id='number'
+                        v-model="checkoutForm.phone_number" placeholder="Enter you phone_number" />
+                    <span class="text-red" hidden id='taskErrorField-number'>This field is required</span>
+                    <textarea class="h-7 rounded bg-lightgrey-100 pl-2" id="address" name="address"
+                        v-model="checkoutForm.address" placeholder="enter your full address"></textarea>
+                    <span class="text-red" hidden id='taskErrorField-address'>This field is required</span>
+                    <input class="h-7 rounded bg-lightgrey-100 pl-2" type='text' name='email' required id='email'
+                        v-model="checkoutForm.email" placeholder="Enter you email" />
+                    <span class="text-red" hidden id='taskErrorField-email'>This field is required</span>
+                    <input class="h-7 rounded bg-lightgrey-100 pl-2" type='text' name='postal_code' required
+                        v-model="checkoutForm.postal_code" id='postal_code' placeholder="Enter you postal_code" />
+                    <span class="text-red" hidden id='taskErrorField-postal_code'>This field is required</span>
+                    <select v-model="checkoutForm.city" class="h-7 rounded bg-lightgrey-100 pl-2" id="city" name="city">
+                        <option selected>Karachi</option>
+                        <option>Lahore</option>
+                        <option>Islamabed</option>
+                        <option>Peshawar</option>
+                        <option>Queta</option>
+                    </select>
+                    <span class="text-red" hidden id='taskErrorField-city'>This field is required</span>
+                    <select v-model="checkoutForm.country"  class="h-7 rounded bg-lightgrey-100 pl-2" id="country" name="country">
+                        <option selected>Pakistan</option>
+                    </select>
+                    <span class="text-red" hidden id='taskErrorField-country'>This field is required</span>
+                    <div>
+                        <label class="paymentLabel text-base flex items-center">
+                            <input type='radio' value="cod" required id='payment_method_cod'
+                                v-model="checkoutForm.payment_method" placeholder="Enter you payment_method" />
+                            Cash on Delivery
+                        </label>
+                        <label class="paymentLabel text-base flex items-center">
+                            <input type='radio' value="op" required id='payment_method_op'
+                                v-model="checkoutForm.payment_method" placeholder="Enter you payment_method" />
+                            Online Payment
+                        </label>
+                    </div>
+                    <button type='button' @click="sumbitCheckout()" id='submitBtn'
+                        class='hover:bg-grey-300 submitBtn bg-blue text-white p-2.5 rounded'>Checkout</button>
+                </form>
+                <div>
+                    <div id="boxList" class="grid-item slideDown flex flex-col gap-1 mt-1">
+                        <div class="box bg-white rounded" v-for="(x, index) in this.checkoutForm.cart_details">
+                            <div class="pl-2.5 pr-2.5 flex justify-between items-center">
+                                <p class="">{{ x.name }}</p>
+                                <div class='actual-price text-green' v-if="x.discounted_price < x.price">
+                                    <span class='discount-price line-through text-red'> {{x.price}} </span>
+                                     {{x.discounted_price }}
+                                </div>
+                                <div class='actual-price text-green' v-else>
+                                     {{x.price}}
+                                </div>
+                                <div class="flex items-center">
+                                    <button class="h-8 mb-1 w-8 flex items-center justify-center" @click="addQty(x.id)">
+                                        <span class="text-3xl leading-none">+</span>
+                                    </button>
+                                    <p class="inline mx-2 text-xl leading-none">{{ x.quantity}} </p>
+                                    <button class="h-8 mb-1.5 w-8 flex items-center justify-center" @click='substractQty(x.id)' >
+                                        <span class="text-4xl leading-none">-</span>
+                                    </button>
+                                </div>
+                                <div>
+                                    <!-- var actualPrice = x.discounted_price < x.price ? x.discounted_price : x.price; -->
+                                    {{x.discounted_price * x.quantity}}
+                                </div>
+                                <div>
+                                    <button class="h-8 w-8 flex items-center justify-center" @click="removeItemCart(x.id)">
+                                        <span class="text-xl leading-none text-red">X</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="totalAmountDiv" class="flex flex-col bg-lightgrey-500 rounded grid-item slideDown mt-2 justify-center">
+                        <div class="bg-white rounded " id="totalAmountBox" v-if="this.totalPrice !== 0">
+                            <p class="ml-2">Total: {{this.totalPrice}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id='main' class="flex-1 box-border p-5 gap-5 grid grid-cols-2	">
+                <div class='grid-item bg-lightgrey-300 rounded-lg p-5' v-for="(x, index) in products">
+                    <h1> {{x.name}} </h1>
+                    <p> {{x.description}} </p>
+                    <div class='actual-price text-green' v-if="x.discounted_price < x.price">
+                        <span class='discount-price line-through text-red'> {{x.price}} </span>
+                        {{x.discounted_price}}
+                    </div>
+                    <div class='actual-price text-green' v-else>
+                        {{x.price}} 
+                    </div>
+                    <div class='addToCartBox'>
+                        <input class="h-6 rounded bg-lightgrey-100 pl-1 mb-1" type='number' :id='"qty"+ x.id'/>
+                        <button class=" border border-grey-900 px-1 rounded"  @click='addToCart(x.id)'>Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const { createApp } = Vue
+
+    createApp({
+        data() {
+            return {
+                message: 'Hello World!',
+                checkoutForm: {
+                    first_name: '',
+                    last_name: '',
+                    phone_number: '',
+                    address: '',
+                    email: '',
+                    postal_code: '',
+                    city: 'Karachi',
+                    country: 'Pakistan',
+                    payment_method: 'cod',
+                    total_amount: '',
+                    cart_details: [],
+                },
+                initialCheckoutForm: {
+                    first_name: '',
+                    last_name: '',
+                    phone_number: '',
+                    address: '',
+                    email: '',
+                    postal_code: '',
+                    city: 'Karachi',
+                    country: 'Pakistan',
+                    payment_method: 'cod',
+                    total_amount: '',
+                    cart_details: [],
+                },
+                products : [
+                    {
+                        id: 1,
+                        name: 'water bottle',
+                        description: 'color: blue, size: large',
+                        price: 100,
+                        discounted_price: 99,
+                    },
+                    {
+                        id: 2,
+                        name: 'mouse',
+                        description: 'wired usb port',
+                        price: 250,
+                        discounted_price: 199,
+                    },
+                    {
+                        id: 3,
+                        name: 'watch',
+                        description: 'color: black, brand: apple',
+                        price: 5000,
+                        discounted_price: 4999,
+                    },
+                    {
+                        id: 4,
+                        name: 'infinix',
+                        description: 'color blue, storage: 120gb, ram: 2gb',
+                        price: 25000,
+                        discounted_price: 24999,
+                    },
+                    {
+                        id: 5,
+                        name: 'shoes',
+                        description: 'size: 8, color blue, type: sports wear',
+                        price: 3000,
+                        discounted_price: 3000,
+                    },
+                ],
+                totalPrice : 0
+            }
+        },
+        
+        computed: {
+            
+        },
+        
+        methods: {
+            changeMsg (){
+                this.message = "I am change now";
+            },
+
+            addToCart(product) {
+                debugger;
+                var currentProduct = this.products.find((x) => { return x.id == product });
+                var currentQty = document.getElementById('qty' + product).value == '' || document.getElementById('qty' + product).value == null ? 1 : document.getElementById('qty' + product).value;
+                cartExistIndex = this.checkoutForm.cart_details.findIndex((x) => { return x.id == product });
+
+                var isDecimal = currentQty != Math.trunc(currentQty);
+
+                if (currentQty < 1 || isDecimal) {
+                    alert('please enter valid quantity');
+                    document.getElementById(`qty` + product).value = '';
+                    return false
+                }
+
+                if (cartExistIndex != -1) {
+                    this.checkoutForm.cart_details[cartExistIndex].quantity = parseInt(this.checkoutForm.cart_details[cartExistIndex].quantity) + parseInt(currentQty);
+                } else {
+                    var cartItem = {
+                        ...currentProduct,
+                        quantity: parseInt(currentQty),
+                    }
+                    this.checkoutForm.cart_details.push(cartItem);
+                }
+                document.getElementById(`qty` + product).value = '';
+                debugger;
+                this.checkoutTotal(currentQty, currentProduct.discounted_price);
+            },
+
+            addQty(productId) {
+                const productIndex = this.checkoutForm.cart_details.findIndex(x => x.id === productId);
+                this.checkoutForm.cart_details[productIndex].quantity = parseInt(this.checkoutForm.cart_details[productIndex].quantity) + 1;
+                this.checkoutTotal(1, this.checkoutForm.cart_details[productIndex].discounted_price);
+            },
+
+            substractQty(productId) {
+                
+                const productIndex = this.checkoutForm.cart_details.findIndex(x => x.id === productId);
+                this.checkoutForm.cart_details[productIndex].quantity = parseInt(this.checkoutForm.cart_details[productIndex].quantity) - 1;
+
+                this.checkoutTotal(-1, this.checkoutForm.cart_details[productIndex].discounted_price);
+                if (this.checkoutForm.cart_details[productIndex].quantity === 0) {
+                    this.removeItemCart(productId);
+                }
+            },
+            
+            totalPrice : 0,
+            checkoutTotal(qty, price) {
+
+                var total_amount = parseInt(qty) * parseInt(price)
+
+                this.totalPrice += total_amount;
+
+            },
+
+            removeItemCart(id) {
+                const productIndex = this.checkoutForm.cart_details.find(x => x.id === id);
+                this.checkoutTotal(-productIndex.quantity, productIndex.discounted_price);                
+
+                var proIndex = this.checkoutForm.cart_details.findIndex((x) => { return x.id == id });
+                this.checkoutForm.cart_details.splice(proIndex, 1);
+
+            },
+
+            validateFields() {
+                var basicFields = [
+                    'first_name',
+                    'last_name',
+                    'address',
+                    'postal_code'
+                ]
+                debugger;
+
+                const basicValidation = () => {
+                    var checkVaildation = true;
+                    basicFields.forEach((x) => {
+                        if (this.checkoutForm[x] == '' || this.checkoutForm[x] == null) {
+                            checkVaildation = false;
+                            document.getElementById('taskErrorField-' + x).hidden = false
+                        } else {
+                            document.getElementById('taskErrorField-' + x).hidden = true
+                        }
+                    })
+                    return checkVaildation
+                }
+
+                var testBasicValidation = basicValidation();
+                if (!testBasicValidation) {
+                    return false;
+                }
+
+                const validatePhoneNumber = (phoneNumber) => {
+                    debugger;
+                    const regex = /^(\+92|92|033|03)[ -]*\d{3}[ -]*\d{7}$/;
+                    return regex.test(phoneNumber);
+                }
+
+                if (!validatePhoneNumber(this.checkoutForm.phone_number)) {
+                    debugger;
+                    document.getElementById('taskErrorField-number').hidden = false
+                    return false
+                } else {
+                    document.getElementById('taskErrorField-number').hidden = true
+                }
+
+                const validateEmail = (email) => {
+                    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                    return regex.test(email);
+                }
+
+                if (!validateEmail(this.checkoutForm.email)) {
+                    document.getElementById('taskErrorField-email').hidden = false;
+                    return false;
+                } else {
+                    document.getElementById('taskErrorField-email').hidden = true;
+                }
+
+                if (this.checkoutForm.cart_details.length == 0) {
+                    alert("Please add items in your cart first");
+                    return false
+                }
+                return true
+            },
+
+            sumbitCheckout (){
+                
+                const checkForm = true //this.validateFields();
+                if (checkForm) {
+                    debugger;
+                    this.checkoutForm = {...this.initialCheckoutForm};
+                    //alert('Thank you for shopping with us. \nTotal Amount: '+ totalPrice);
+                    this.checkoutForm.cart_details = [];
+                    document.getElementById('ecommerceForm').reset()
+                    this.totalPrice = 0;
+                }
+            },
+
+
+        },
+
+        // beforeCreate(){
+            
+        // },
+        // created(){
+            
+        // },
+        // beforeMount(){
+        //     let testLet = document.getElementById('sidebar');
+        //     console.log('before mount')
+        //     console.log(testLet)
+        // },
+        // mounted(){
+        //     let testLet = document.getElementById('sidebar');
+        //     console.log('mount')
+        //     console.log(testLet)
+        // },
+        // beforeUpdate(){
+        //     console.log("before update");
+        //     console.log(this.message); //displays same value as updated
+        // },
+        // updated(){
+        //     console.log("during update");
+        //     console.log(this.message);
+        // },
+    }).mount('#app')
+
+</script>
+</html>

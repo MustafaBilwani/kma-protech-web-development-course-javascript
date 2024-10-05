@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body{
+                background-color: darkslategray;
+                display: flex;
+                flex-direction: column;
+                height: 98vh;
+            }
+            #header{
+                background-color: red;
+                height: 80px;
+                display: flex;
+                justify-content: center;
+                animation: 1s ease-out 0s 1 slideInFromUp;
+            }
+            @keyframes slideInFromUp{
+                0%{
+                    transform: translateY(-100%);
+                }
+                100%{
+                    transform: translateY(0);
+                }
+            }
+            #container{
+                display: flex;
+                flex: 1;
+            }
+            #sidebar{
+                background-color: green;
+                width: 300px;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+            #main{
+                flex: 1;
+                margin-left: 10px;
+                display: grid;
+                grid-template-columns: repeat(auto-fill,minmax(500px, 2fr));
+                gap: 10px;
+                position: relative;
+            }
+            .grid-item{
+                background: #fff00f;
+                padding-left: 5px;
+                padding-top: 5px;
+                border-radius: 10px;
+            }   
+            button{
+                background-color: blue; color: white; border-radius: 5px; border: none; padding: 10px;
+            }
+            .submitBtn:active {
+                background-color: rgba(2, 2, 251, 0.646) !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="header">
+                <h1>June 2024</h1> 
+        </div>
+    <div id="container"> 
+        <div id="sidebar">
+                <h1>Testing</h1>
+        </div>
+        <div id="main">
+            <div class="grid-item">
+            <form id="taskForm" onsubmit="event.preventDefault();" style="display: flex; flex-direction:column; gap: 4px; ">
+                <label>
+                    Task
+                </label>
+                <input type="text" name="task" required id="taskField" />
+                <span hidden style="color: red;" id="taskErrorField" >This Field Is Required</span>
+                <br>
+                <button type="button" onclick="saveTask()" id="submitBtn">Submit</button>
+            </form>            
+            </div>
+            <div id="boxList" style=" display: flex; flex-direction: column; gap: 4px;" class="grid-item">
+                
+            </div>          
+        </div>
+    </div>
+    </body>
+    <script> 
+
+        var tasks = [];
+        var editTaskId = null;
+        
+        var taskErrorField = document.getElementById('taskErrorField');
+        var taskVal = document.getElementById('taskField');
+        var boxList = document.getElementById('boxList');
+
+        function saveTask() {
+
+            if(taskVal.validity.valueMissing){
+                taskErrorField.hidden = false
+                return false
+            }
+            taskErrorField.hidden = true
+
+            if(editTaskId != null) {
+                tasks[editTaskId] = taskVal.value ;
+                var renderListElement = '';
+                tasks.forEach((x, index) => {
+                    
+                renderListElement += `<div class="box" style="background-color: aqua;">
+                    <div style="padding-left:10px; border-radius: 50%; padding-right: 10px; display:flex; justify-content: space-between; align-items: center;">
+                        <p>`+ x +`</p>
+                        <div>
+                        <button onclick="editTask(`+index+`)">
+                            Edit
+                        </button>
+                        <button onclick="deleteTask(`+index+`)">
+                            X
+                        </button>
+                        </div>
+                    </div>
+                </div>`
+
+                })
+                boxList.innerHTML = renderListElement;
+
+                document.getElementById('submitBtn').innerHTML = "save";
+                editTaskId = null;  
+            } else {
+                tasks.push(taskVal.value);
+            currentTaskId = tasks.length - 1
+
+            let listHtml = `<div class="box" style="background-color: aqua;">
+                    <div style="padding-left:10px; border-radius: 50%; padding-right: 10px; display:flex; justify-content: space-between; align-items: center;">
+                        <p>`+ taskVal.value +`</p>
+                        <div >
+                        <button onclick="editTask(`+currentTaskId+`)">
+                            Edit
+                        </button>
+                        <button onclick="deleteTask(`+currentTaskId+`)">
+                            X
+                        </button>
+                        </div>
+                    </div>
+                </div>`;
+        
+            boxList.innerHTML += listHtml;  
+            }
+
+            taskVal.value = "";
+        }
+
+        function editTask(id){
+            editTaskId = id;
+            taskVal.value = tasks[id];
+            document.getElementById('submitBtn').innerHTML = "Update";
+        }
+
+        function deleteTask(id){
+            tasks.splice(id,1);
+            var renderListElement = '';
+            tasks.forEach((x, index)=>{
+                renderListElement += `<div class="box" style="background-color: aqua;">
+                    <div style="padding-left:10px; border-radius: 50%; padding-right: 10px; display:flex; justify-content: space-between; align-items: center;">
+                        <p>`+ x +`</p>
+                        <div>
+                        <button onclick="editTask(`+index+`)">
+                            Edit
+                        </button>
+                        <button onclick="deleteTask(`+index+`)">
+                            X
+                        </button>
+                        </div>
+                    </div>
+                </div>`
+            })
+
+            boxList.innerHTML = renderListElement;
+        }                    
+    </script>
+</html>
