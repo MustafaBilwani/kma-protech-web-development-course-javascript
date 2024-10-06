@@ -56,8 +56,7 @@ function addProduct (){
 
     products.push(productName);
     productStockTotal[productName] = 0;
-    let array = [];
-    productStockDetail[productName] = array;
+    productStockDetail[productName] = [];
     
     renderProductTable(productName);
 }
@@ -113,8 +112,10 @@ function coming(){
             <td></td>
         </tr>`
     productStockTable.innerHTML += itemStockTableHtml;
+    
     productStockTotal[comingProduct.value] += parseInt(qty);
     productStockDetail[comingProduct.value].push({quantity: parseInt(qty), price: parseInt(comingPrice.value), id: index+'coming', initialQty: qty});
+    
     document.getElementById('comingForm').reset();
     renderStockTotal();
     updateDate();
@@ -123,7 +124,7 @@ function coming(){
 function going(){
     debugger;
     updateProduct = goingProduct.value;
-    
+
     if (goingProduct.value === '' || goingQty.value === ''){
         alert('incomplete details'); return false;
     }
@@ -134,57 +135,43 @@ function going(){
         alert('not enough stock'); return false;
     }
     
-    var productStockTable = document.getElementById(goingProduct.value+`StockTable`);
+    var productStockTable = document.getElementById(goingProduct.value + `StockTable`);
 
-    if (productStockDetail[goingProduct.value][0].quantity > goingQty.value){
-        itemStockTableHtml = `<tr>
+    while(goingQty.value > 0){
+        var goingProductDetail = productStockDetail[goingProduct.value][0];
+        currentStock = Math.min(goingQty.value, goingProductDetail.quantity)
+
+        itemStockTableHtml = 
+            `<tr>
                 <td>`+goingDate.value+`</td>
                 <td>`+goingNote.value+`</td>
                 <td></td>
-                <td>`+goingQty.value+`</td>
+                <td>`+currentStock+`</td>
                 <td>`+goingPrice.value+`</td>
-                <td>`+ productStockDetail[goingProduct.value][0].price +`</td>
+                <td>`+ goingProductDetail.price +`</td>
             </tr>`
         productStockTable.innerHTML += itemStockTableHtml;
-        productStockTotal[goingProduct.value] -= parseInt(goingQty.value);
-
-        productStockDetail[goingProduct.value][0].quantity -= goingQty.value;//syntax by gpt 
+        productStockTotal[goingProduct.value] -= parseInt(currentStock);
+        goingQty.value -= currentStock;
+        goingProductDetail.quantity -= currentStock; 
         
-        document.getElementById(productStockDetail[goingProduct.value][0].id).innerHTML = 
-            `<s>`+productStockDetail[goingProduct.value][0].initialQty+ `</s> `+productStockDetail[goingProduct.value][0].quantity;
-            
-    } else {
-        itemStockTableHtml = `<tr>
-            <td>`+goingDate.value+`</td>
-            <td>`+goingNote.value+`</td>
-            <td></td>
-            <td>`+productStockDetail[goingProduct.value][0].quantity+`</td>
-            <td>`+goingPrice.value+`</td>
-            <td>`+ productStockDetail[goingProduct.value][0].price +`</td>
-        </tr>`
-        productStockTable.innerHTML += itemStockTableHtml;
-        
-        goingQty.value -= productStockDetail[goingProduct.value][0].quantity;
-        productStockTotal[goingProduct.value] -= parseInt(productStockDetail[goingProduct.value][0].quantity);
+        document.getElementById(goingProductDetail.id).innerHTML = 
+            `<s>` + goingProductDetail.initialQty + `</s> ` + goingProductDetail.quantity;
 
-        document.getElementById(productStockDetail[goingProduct.value][0].id).innerHTML = `<s>`+productStockDetail[goingProduct.value][0].initialQty+ `</s> 0`;
-
-        productStockDetail[goingProduct.value].splice(0, 1);
-
-        if(goingQty.value > 0){
-            going();
-            return;//by gpt
-        }
+        if(goingProductDetail.quantity == 0){
+            productStockDetail[goingProduct.value].splice(0, 1);
+        }        
     }
 
-    document.getElementById('goingForm').reset();
     renderStockTotal();
+    document.getElementById('goingForm').reset();
     updateDate();
+
 }
     
 function renderStockTotal(){
-    document.getElementById(updateProduct +`StockTd`).innerHTML = productStockTotal[updateProduct];
-    document.getElementById(updateProduct +`StockHeading`).innerHTML = 'Stock: '+ productStockTotal[updateProduct];
+    document.getElementById(updateProduct + `StockTd`).innerHTML = productStockTotal[updateProduct];
+    document.getElementById(updateProduct + `StockHeading`).innerHTML = 'Stock: '+ productStockTotal[updateProduct];
 }
 
 function updateDate() {
