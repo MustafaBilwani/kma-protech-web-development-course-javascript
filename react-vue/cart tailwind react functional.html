@@ -295,6 +295,76 @@
                 return newObject;
             })
         }
+        
+        function validateFields() {
+            var basicFields = [
+                'first_name',
+                'last_name',
+                'address',
+                'postal_code'
+            ]
+
+            const basicValidation = () => {
+                var checkVaildation = true;
+                basicFields.forEach((x) => {
+                    if (document.getElementById(x).value == '' || document.getElementById(x).value == null) {
+                        checkVaildation = false;
+                        document.getElementById('taskErrorField-' + x).hidden = false
+                    } else {
+
+                        document.getElementById('taskErrorField-' + x).hidden = true
+                    }
+                })
+                return checkVaildation
+            }
+
+            var testBasicValidation = basicValidation();
+            if (!testBasicValidation) {
+                return false
+            }
+
+            const validatePhoneNumber = (phoneNumber) => {
+                const regex = /^(\+92|92|033|03)[ -]*\d{3}[ -]*\d{7}$/;
+                return regex.test(phoneNumber);
+            }
+
+            if (!validatePhoneNumber(document.getElementById('number').value)) {
+                document.getElementById('taskErrorField-number').hidden = false
+                return false
+            } else {
+                document.getElementById('taskErrorField-number').hidden = true
+            }
+
+            const validateEmail = (email) => {
+                const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                return regex.test(email);
+            }
+
+            if (!validateEmail(document.getElementById('email').value)) {
+                document.getElementById('taskErrorField-email').hidden = false;
+                return false;
+            } else {
+                document.getElementById('taskErrorField-email').hidden = true;
+            }
+
+
+            if (checkoutForm.cart_details.length == 0) {
+                alert("Please add items in your cart first");
+                return false
+            }
+            return true
+        }
+
+        function sumbitCheckout (){
+        
+            const checkForm = validateFields();
+            if (checkForm) {
+                
+                //alert('Thank you for shopping with us. \nTotal Amount: '+ totalPrice);
+                setCheckoutForm(initialCheckoutForm)
+                document.getElementById('ecommerceForm').reset();
+            }
+        }
 
         return(
 
@@ -354,7 +424,7 @@
                                     Online Payment
                                 </label>
                             </div>
-                            <button type='button'  id='submitBtn'
+                            <button type='button' onClick={() => {sumbitCheckout()}} id='submitBtn'
                                 className='hover:bg-grey-300 submitBtn bg-blue text-white p-2.5 rounded'>Checkout</button>
                         </form>
                         <div>
@@ -388,78 +458,7 @@
     // )
 
     
-
-    function validateFields() {
-        var basicFields = [
-            'first_name',
-            'last_name',
-            'address',
-            'postal_code'
-        ]
-
-        const basicValidation = () => {
-            var checkVaildation = true;
-            basicFields.forEach((x) => {
-                if (document.getElementById(x).value == '' || document.getElementById(x).value == null) {
-                    checkVaildation = false;
-                    document.getElementById('taskErrorField-' + x).hidden = false
-                } else {
-
-                    document.getElementById('taskErrorField-' + x).hidden = true
-                }
-            })
-            return checkVaildation
-        }
-
-        var testBasicValidation = basicValidation();
-        if (!testBasicValidation) {
-            return false
-        }
-
-        const validatePhoneNumber = (phoneNumber) => {
-            const regex = /^(\+92|92|033|03)[ -]*\d{3}[ -]*\d{7}$/;
-            return regex.test(phoneNumber);
-        }
-
-        if (!validatePhoneNumber(document.getElementById('number').value)) {
-            document.getElementById('taskErrorField-number').hidden = false
-            return false
-        } else {
-            document.getElementById('taskErrorField-number').hidden = true
-        }
-
-        const validateEmail = (email) => {
-            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            return regex.test(email);
-        }
-
-        if (!validateEmail(document.getElementById('email').value)) {
-            document.getElementById('taskErrorField-email').hidden = false;
-            return false;
-        } else {
-            document.getElementById('taskErrorField-email').hidden = true;
-        }
-
-
-        if (checkoutForm.cart_details.length == 0) {
-            alert("Please add items in your cart first");
-            return false
-        }
-        return true
-    }
-
-    function sumbitCheckout (){
-        
-        const checkForm = validateFields();
-        if (checkForm) {
-            
-            //alert('Thank you for shopping with us. \nTotal Amount: '+ totalPrice);
-            checkoutForm = {...initialCheckoutForm};
-            checkoutForm.cart_details = [];
-            document.getElementById('ecommerceForm').reset();
-            renderCarts();
-        }
-    }
+    
 
 </script>
 
