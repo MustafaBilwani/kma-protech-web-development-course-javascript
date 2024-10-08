@@ -36,12 +36,12 @@ NOTES:
       //--------------------
 
       // count closure - used to provide unique ids for component keys of todo items.
-      const getIdCount = (() => {
+      const getIdCount = () => {
         let count = 0;
         return () => {
           return count++;
         }
-      })();
+      }();
 
       //--------------------
       // REDUX
