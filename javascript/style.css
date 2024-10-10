@@ -52,6 +52,10 @@ label {
     height: 30px;
   }
 
+  .submitBtn{
+    background-color: blue; color: white; padding: 10px; border: none; border-radius: 5px;
+  }
+
   .submitBtn:active {
     background-color: rgba(2, 2, 251, 0.646) !important;
   }
@@ -91,6 +95,26 @@ label {
     padding:30px;
   }
 
+  #mainBox{
+    display: flex; width: 100%; gap:10px
+  }
+
+  #ecommerceForm{
+    display: flex; flex-direction:column; gap: 4px; 
+  }
+
+  #boxList{
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  #totalAmountDiv{
+    display: flex; flex-direction: column; height: 3px; justify-content: center;
+  }
+  
+  .cartItemBox{
+    padding-left:10px; border-radius: 50%; padding-right: 10px; display:flex; justify-content: space-between; align-items: center;
+  }
+
   #fixedDiv {
     position: fixed;
     color: white;
@@ -113,6 +137,19 @@ label {
     width: 100%;
     height: 200px;
     background-color: pink;
+  }
+  
+  .discount-price {
+    text-decoration: line-through;
+    color: red
+  }
+  .actual-price {
+      color: green;
+  }
+
+  .paymentLabel {
+      display: flex;
+      align-items: center;
   }
 
   @keyframes slideInFromUp {

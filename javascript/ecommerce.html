@@ -2,21 +2,6 @@
 <html>
     <head>
         <link rel="stylesheet" href="style.css" />
-        <style>
-            .discount-price {
-                text-decoration: line-through;
-                color: red
-            }
-            .actual-price {
-                color: green;
-            }
- 
-            .paymentLabel {
-                display: flex;
-                align-items: center;
-            }
- 
-        </style>
         <title>E Commerce</title>
     </head>
     <body>
@@ -27,9 +12,9 @@
         <div id="sidebar">
             <h1>Testing</h1>
         </div>
-        <div id='mainBox' style='display: flex; width: 100%; gap:10px'>
+        <div id='mainBox'>
             <div class="grid-item slideDown" style='width: 35%;'>
-                <form id="ecommerceForm" onsubmit="event.preventDefault();" style="display: flex; flex-direction:column; gap: 4px; ">
+                <form id="ecommerceForm" onsubmit="event.preventDefault();">
                     <label>Checkout Form</label>
                     <input type='text' name='first_name' required id='first_name' placeholder="Enter you first_name"/>
                     <span style='color:red;' hidden id='taskErrorField-first_name'>This field is required</span>
@@ -65,13 +50,13 @@
                           Online Payment
                       </label>
                     </div>
-                    <button type='button' onclick="sumbitCheckout()" id='submitBtn' class='submitBtn' style='background-color: blue; color: white; padding: 10px; border: none; border-radius: 5px;'>Checkout</button>
+                    <button type='button' onclick="sumbitCheckout()" id='submitBtn' class='submitBtn'>Checkout</button>
                 </form>            
                 <div>
-                    <div id="boxList" style=" display: flex; flex-direction: column; gap: 4px;" class="grid-item slideDown">
+                    <div id="boxList" class="grid-item slideDown">
  
                     </div> 
-                    <div id="totalAmountDiv" style=" display: flex; flex-direction: column; height: 3px; justify-content: center;" class="grid-item slideDown">
+                    <div id="totalAmountDiv" class="grid-item slideDown">
                         <div id="totalAmountBox"></div>
                     </div>
                 </div>
@@ -211,7 +196,7 @@
                 var total_amount = (parseInt(actualPrice) * parseInt(x.quantity)) 
  
             cartHtml += `<div class="box" style="background-color: aqua;">
-                <div style="padding-left:10px; border-radius: 50%; padding-right: 10px; display:flex; justify-content: space-between; align-items: center;">
+                <div class="cartItemBox">
                     <p>`+ x.name +`</p>
                     `+ priceBox +`
                     <div>
